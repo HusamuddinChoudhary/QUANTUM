@@ -1,19 +1,39 @@
-# FRONTEND: React (Vite)
-- type: static
-  name: quantum-ares-frontend
-  region: ohio
-  plan: free
-  buildCommand: npm install && npm run build
-  staticPublishPath: dist
+services:
 
-  envVars:
-    - key: VITE_API_URL
-      fromService:
-        type: web
-        name: quantum-ares-backend
-        envVarKey: RENDER_EXTERNAL_URL
+  # -------------------------
+  # BACKEND: FastAPI
+  # -------------------------
+  - type: web
+    name: quantum-ares-backend
+    runtime: python
+    region: ohio
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn saas_platform.backend.main:app --host 0.0.0.0 --port $PORT
 
-  routes:
-    - type: rewrite
-      source: /*
-      destination: /index.html
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11
+
+
+  # -------------------------
+  # FRONTEND: React (Vite)
+  # -------------------------
+  - type: static
+    name: quantum-ares-frontend
+    region: ohio
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: quantum-ares-backend
+          envVarKey: RENDER_EXTERNAL_URL
+
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
