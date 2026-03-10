@@ -14,15 +14,17 @@ services:
       - key: PYTHON_VERSION
         value: 3.11
 
+
   # -------------------------
   # FRONTEND: React (Vite)
   # -------------------------
-  - type: static_site
+  - type: web
     name: quantum-ares-frontend
+    runtime: node
     region: ohio
     plan: free
     buildCommand: npm install && npm run build
-    staticPublishPath: dist
+    startCommand: npx serve -s dist -l $PORT
 
     envVars:
       - key: VITE_API_URL
@@ -30,8 +32,3 @@ services:
           type: web
           name: quantum-ares-backend
           envVarKey: RENDER_EXTERNAL_URL
-
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
