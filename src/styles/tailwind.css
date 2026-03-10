@@ -1,0 +1,97 @@
+@import 'tailwindcss' source(none);
+@source '../**/*.{js,ts,jsx,tsx}';
+
+@import 'tw-animate-css';
+
+:root {
+    /* LIGHT THEME (default) */
+    --c-bg: #ffffff;
+    --c-bg-alt: #f0f4fa;
+    --c-bg-card: #ffffff;
+
+    --c-primary: #0a1628;
+    --c-primary-mid: #1a3560;
+    --c-primary-light: #dce8f8;
+
+    --c-accent: #2563eb;
+    --c-accent-light: #e8eef7;
+    --c-accent-hover: #dbeafe;
+
+    --c-text-main: #0a1628;
+    --c-text-muted: #4a5568;
+    --c-text-sub: #6b7fa3;
+    --c-text-inverse: #ffffff;
+
+    --c-border: rgba(10, 22, 40, 0.12);
+    --c-border-nav: rgba(10, 22, 40, 0.1);
+    --c-border-accent: rgba(37, 99, 235, 0.25);
+
+    --c-shadow: rgba(10, 22, 40, 0.06);
+    --c-shadow-hover: rgba(37, 99, 235, 0.12);
+
+    /* Status Colors (Light) */
+    --c-danger: #dc2626;
+    --c-danger-bg: #fee2e2;
+    --c-danger-border: rgba(220, 38, 38, 0.2);
+    --c-danger-text: #991b1b;
+
+    --c-warning: #d97706;
+    --c-warning-bg: #fef3c7;
+    --c-warning-border: rgba(217, 119, 6, 0.2);
+    --c-warning-text: #92400e;
+
+    --c-success: #16a34a;
+    --c-success-bg: #dcfce7;
+    --c-success-border: rgba(22, 163, 74, 0.2);
+    --c-success-text: #14532d;
+}
+
+html.dark-theme,
+body.dark-theme {
+    /* DARK THEME */
+    --c-bg: #070e20;
+    --c-bg-alt: #0d1b3e;
+    --c-bg-card: #0f2347;
+
+    --c-primary: #ffffff;
+    --c-primary-mid: #e8edf7;
+    --c-primary-light: rgba(255, 255, 255, 0.1);
+
+    --c-accent: #9a7d0a;
+    --c-accent-light: rgba(154, 125, 10, 0.15);
+    --c-accent-hover: rgba(154, 125, 10, 0.25);
+
+    --c-text-main: #e8edf7;
+    --c-text-muted: #a0aecb;
+    --c-text-sub: #6b7fa3;
+    --c-text-inverse: #0a1628;
+
+    --c-border: rgba(154, 125, 10, 0.2);
+    --c-border-nav: rgba(154, 125, 10, 0.1);
+    --c-border-accent: rgba(154, 125, 10, 0.4);
+
+    --c-shadow: rgba(154, 125, 10, 0.1);
+    --c-shadow-hover: rgba(154, 125, 10, 0.2);
+
+    /* Status Colors (Dark) */
+    --c-danger: #b03a2e;
+    --c-danger-bg: rgba(176, 58, 46, 0.1);
+    --c-danger-border: rgba(176, 58, 46, 0.25);
+    --c-danger-text: #e8edf7;
+
+    --c-warning: #c97a2a;
+    --c-warning-bg: rgba(201, 122, 42, 0.1);
+    --c-warning-border: rgba(201, 122, 42, 0.25);
+    --c-warning-text: #e8edf7;
+
+    --c-success: #2a7a2a;
+    --c-success-bg: rgba(42, 122, 42, 0.1);
+    --c-success-border: rgba(42, 122, 42, 0.25);
+    --c-success-text: #e8edf7;
+}
+
+body {
+    background-color: var(--c-bg);
+    color: var(--c-text-main);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
