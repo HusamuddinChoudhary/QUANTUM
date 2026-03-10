@@ -17,11 +17,9 @@ services:
   # -------------------------
   # FRONTEND: Static Site
   # -------------------------
-  - type: web
+  - type: static_site
     name: quantum-ares-frontend
-    env: static
     region: ohio
-    plan: free
     buildCommand: "npm install && npm run build"
     staticPublishPath: "./dist"
     envVars:
