@@ -26,7 +26,7 @@ export function Sidebar() {
 
   const handleLogout = () => { logout(); navigate('/login', { replace: true }); };
   const displayName = user?.fullName ?? user?.name ?? user?.email ?? 'User';
-  const initials = displayName.split(' ').map((n: string) => n[0]).toUpperCase().join('').slice(0, 2);
+  const initials = displayName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
 
   return (
     <aside style={{

@@ -35,7 +35,7 @@ export function OverviewTab() {
   const recentSessions = sessions.slice(0, 3);
 
   // Use data from the most recent session for stat cards if available
-  const latest = sessions[0] || { score: 0, violations_count: 0, status: 'N/A', date: 'N/A' };
+  const latest: any = sessions[0] || { score: 0, violations_count: 0, status: 'N/A', date: 'N/A' };
 
   const STAT_CARDS = [
     { label: 'Current Score', value: Math.round(latest.score || 0).toString(), unit: '/100', color: getScoreColor(latest.score || 0), glow: 'rgba(22,163,74,0.12)', icon: TrendingUp, sub: 'Security Index' },
@@ -158,7 +158,7 @@ export function OverviewTab() {
                     <td style={{ padding: '14px 24px' }}>
                       <div style={{ display: 'flex', gap: 8 }}>
                         <button className="qa-action-btn" onClick={() => handleViewSession(s.id)}><Eye size={12} />View</button>
-                        <button className="qa-action-btn" onClick={() => window.open(`http://localhost:8000/api/reports/${s.report_id}/download`, '_blank')}><Download size={12} />PDF</button>
+                        <button className="qa-action-btn" onClick={() => window.open(`${(import.meta as any).env.VITE_API_URL || 'http://localhost:8000'}/api/reports/${s.report_id}/download`, '_blank')}><Download size={12} />PDF</button>
                       </div>
                     </td>
                   </tr>
