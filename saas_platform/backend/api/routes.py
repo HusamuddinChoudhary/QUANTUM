@@ -14,21 +14,71 @@ router = APIRouter()
 SESSIONS_CACHE = {}
 DEMO_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "demo")
 
+# In-memory user store for MVP/Demo
+MOCK_USERS: dict = {
+    "admin@bank.com": {
+        "id": "admin-id",
+        "email": "admin@bank.com",
+        "fullName": "Alex Chen",
+        "role": "ADMIN",
+        "orgId": "bank-org-id",
+        "passwordHash": get_password_hash("password")
+    }
+}
+
 # Auth Endpoints
+@router.post("/auth/signup")
+async def signup(data: dict = Body(...)):
+    email = data.get("email", "").strip().lower()
+    password = data.get("password", "")
+    full_name = data.get("name", email.split("@")[0])
+
+    if not email or not password:
+        raise HTTPException(status_code=400, detail="Email and password are required")
+    if email in MOCK_USERS:
+        raise HTTPException(status_code=409, detail="User already exists")
+
+    user_id = str(uuid.uuid4())
+    MOCK_USERS[email] = {
+        "id": user_id,
+        "email": email,
+        "fullName": full_name,
+        "role": "USER",
+        "orgId": "default-org",
+        "passwordHash": get_password_hash(password)
+    }
+
+    access = create_access_token({"sub": user_id, "org_id": "default-org", "role": "USER"})
+    refresh = create_refresh_token(user_id)
+    return {
+        "accessToken": access,
+        "refreshToken": refresh,
+        "user": {"id": user_id, "email": email, "role": "USER", "orgId": "default-org", "fullName": full_name}
+    }
+
 @router.post("/auth/login")
 async def login(data: dict = Body(...)):
-    # Mock auth logic for MVP
-    email = data.get("email")
-    password = data.get("password")
-    if email == "admin@bank.com" and password == "password":
-        access = create_access_token({"sub": "admin-id", "org_id": "bank-org-id", "role": "ADMIN"})
-        refresh = create_refresh_token("admin-id")
-        return {
-            "accessToken": access,
-            "refreshToken": refresh,
-            "user": {"id": "admin-id", "email": email, "role": "ADMIN", "orgId": "bank-org-id", "fullName": "Alex Chen"}
+    email = data.get("email", "").strip().lower()
+    password = data.get("password", "")
+
+    user = MOCK_USERS.get(email)
+    if not user or not verify_password(password, user["passwordHash"]):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    access = create_access_token({"sub": user["id"], "org_id": user["orgId"], "role": user["role"]})
+    refresh = create_refresh_token(user["id"])
+    return {
+        "accessToken": access,
+        "refreshToken": refresh,
+        "user": {
+            "id": user["id"],
+            "email": user["email"],
+            "role": user["role"],
+            "orgId": user["orgId"],
+            "fullName": user["fullName"]
         }
-    raise HTTPException(status_code=401, detail="Invalid credentials")
+    }
+
 
 @router.post("/auth/refresh")
 async def refresh(data: dict = Body(...)):
