@@ -6,7 +6,8 @@
   "scripts": {
     "dev:frontend": "vite",
     "dev:backend": "py -m uvicorn saas_platform.backend.main:app --reload",
-    "dev": "concurrently -n \"frontend,backend\" -c \"blue,green\" \"npm run dev:frontend\" \"npm run dev:backend\""
+    "dev": "concurrently -n \"frontend,backend\" -c \"blue,green\" \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "build": "vite build"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
