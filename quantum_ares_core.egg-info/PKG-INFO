@@ -1,0 +1,76 @@
+Metadata-Version: 2.4
+Name: quantum-ares-core
+Version: 0.1.0
+Summary: Core validation engines for QUANTUM-ARES
+Author-email: QUANTUM-ARES <admin@quantum-ares.local>
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: networkx>=3.0
+Requires-Dist: pydantic>=2.0
+Requires-Dist: fastapi>=0.115
+Requires-Dist: uvicorn
+Requires-Dist: celery>=5.0
+Requires-Dist: redis>=5.0
+Requires-Dist: SQLAlchemy[asyncio]>=2.0
+Requires-Dist: alembic
+Requires-Dist: asyncpg
+Requires-Dist: psycopg2-binary
+Requires-Dist: cyclonedx-python-lib
+Requires-Dist: sentence-transformers
+Requires-Dist: chromadb
+Requires-Dist: reportlab>=4.0
+Requires-Dist: cryptography>=42.0
+Requires-Dist: web3>=6.0
+Requires-Dist: rapidfuzz
+Requires-Dist: python-jose[cryptography]
+Requires-Dist: passlib[argon2]
+Requires-Dist: python-multipart
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: python-hcl2
+
+# QUANTUM-ARES
+
+<<<<<<< HEAD
+QUANTUM-ARES is a cybersecurity infrastructure validation SaaS specializing in Zero-Trust, Quantum Risk, and Attack Path analysis.
+
+## 🚀 Quick Start (Docker)
+=======
+>>>>>>> 6e8bbdda0c392af1ece206fd847e365986662f88
+
+To start the entire stack (Frontend, Backend, Database, Worker, Redis) with a single command:
+
+```bash
+docker compose up --build
+```
+
+<<<<<<< HEAD
+Once the containers are running:
+- **Frontend**: [http://localhost](http://localhost)
+- **API Documentation**: [http://localhost:8000/api/docs](http://localhost:8000/api/docs)
+
+## 🏗️ Architecture
+
+- **Frontend**: React 18, Vite, Three.js, Cytoscape
+- **Backend**: FastAPI 0.115+, SQLAlchemy 2.0 (Async)
+- **Database**: PostgreSQL 16
+- **Task Queue**: Celery 5 + Redis 7
+- **Security Engines**: NetworkX Graph Engine, QVI Analysis
+
+## 🛠️ Manual Development Setup
+
+If you prefer to run services manually:
+
+### Backend
+1. `py -m pip install -e .`
+2. `py -m uvicorn saas_platform.backend.main:app --reload`
+
+### Frontend
+1. `npm install`
+2. `npm run dev`
+
+---
+*Created for the Quantum-era Cybersecurity Infrastructure.*
+=======
+  Run `npm run dev` to start the development server.
+  
+>>>>>>> 6e8bbdda0c392af1ece206fd847e365986662f88

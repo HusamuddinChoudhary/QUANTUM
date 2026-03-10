@@ -1,0 +1,3 @@
+@echo off
+echo Starting QUANTUM-ARES Stack...
+npm run dev
