@@ -1,0 +1,310 @@
+[
+    {
+        "rule_id": "ZT-001",
+        "name": "Public-to-Private DB without auth",
+        "severity": "CRITICAL",
+        "mitre_id": "T1046",
+        "cvss_base": 9.8,
+        "description": "Database in PRIVATE zone accessible from PUBLIC zone without auth",
+        "remediation": [
+            "Enable mutual TLS",
+            "Require auth_required=true on all edges to DB"
+        ],
+        "compliance": [
+            "NIST-AC-3",
+            "DPDP-S8",
+            "RBI-IT-7.2"
+        ],
+        "check": "[n for n in G.nodes if G.nodes[n]['type'] == 'database' and G.nodes[n]['zone'] == 'PRIVATE' and any(G.nodes[s]['zone'] == 'PUBLIC' and not G.edges[s, n]['auth_required'] for s in G.predecessors(n))]"
+    },
+    {
+        "rule_id": "ZT-002",
+        "name": "Admin panel node in PUBLIC zone",
+        "severity": "HIGH",
+        "mitre_id": "T1133",
+        "cvss_base": 7.5,
+        "description": "Admin panel detected in PUBLIC zone",
+        "remediation": [
+            "Move admin panel to PRIVATE or RESTRICTED zone"
+        ],
+        "compliance": [
+            "NIST-AC-3"
+        ],
+        "check": "[n for n in G.nodes if 'admin' in G.nodes[n]['name'].lower() and G.nodes[n]['zone'] == 'PUBLIC']"
+    },
+    {
+        "rule_id": "ZT-003",
+        "name": "No encryption on sensitive data",
+        "severity": "CRITICAL",
+        "mitre_id": "T1530",
+        "cvss_base": 9.0,
+        "description": "Encryption is NONE for HIGH/CRITICAL sensitivity node",
+        "remediation": [
+            "Enable AES-256 or TLS-1.3 encryption"
+        ],
+        "compliance": [
+            "NIST-SC-28",
+            "DPDP-S8(4)",
+            "RBI-IT-9.1"
+        ],
+        "check": "[n for n in G.nodes if G.nodes[n]['encryption_type'] == 'NONE' and G.nodes[n]['data_sensitivity'] in ['HIGH', 'CRITICAL']]"
+    },
+    {
+        "rule_id": "ZT-004",
+        "name": "Admin edge without auth",
+        "severity": "HIGH",
+        "mitre_id": "T1078",
+        "cvss_base": 7.8,
+        "description": "Port 22 or 3389 edge without auth_required",
+        "remediation": [
+            "Enable mandatory authentication for management ports"
+        ],
+        "compliance": [
+            "NIST-IA-2",
+            "RBI-IT-7.3"
+        ],
+        "check": "[u for u, v in G.edges if G.edges[u, v]['port'] in [22, 3389] and not G.edges[u, v]['auth_required']]"
+    },
+    {
+        "rule_id": "ZT-005",
+        "name": "Wildcard IAM role",
+        "severity": "CRITICAL",
+        "mitre_id": "T1098",
+        "cvss_base": 9.5,
+        "description": "Wildcard '*:*' detected in iam_roles",
+        "remediation": [
+            "Apply principle of least privilege"
+        ],
+        "compliance": [
+            "NIST-AC-6",
+            "DPDP-S6(1)"
+        ],
+        "check": "[n for n in G.nodes if '*:*' in G.nodes[n].get('iam_roles', [])]"
+    },
+    {
+        "rule_id": "ZT-006",
+        "name": "Unencrypted DB edge",
+        "severity": "HIGH",
+        "mitre_id": "T1557",
+        "cvss_base": 7.0,
+        "description": "HTTP edge to database detected",
+        "remediation": [
+            "Force HTTPS/TLS for all database connections"
+        ],
+        "compliance": [
+            "NIST-SC-8"
+        ],
+        "check": "[u for u, v in G.edges if G.nodes[v]['type'] == 'database' and G.edges[u, v]['protocol'] == 'HTTP']"
+    },
+    {
+        "rule_id": "ZT-007",
+        "name": "Critical sensitivity in PUBLIC zone",
+        "severity": "CRITICAL",
+        "mitre_id": "T1190",
+        "cvss_base": 9.1,
+        "description": "Node with CRITICAL sensitivity located in PUBLIC zone",
+        "remediation": [
+            "Move critical resources to RESTRICTED zone"
+        ],
+        "compliance": [
+            "NIST-SI-2"
+        ],
+        "check": "[n for n in G.nodes if G.nodes[n]['data_sensitivity'] == 'CRITICAL' and G.nodes[n]['zone'] == 'PUBLIC']"
+    },
+    {
+        "rule_id": "ZT-008",
+        "name": "RDP exposure DMZ to PRIVATE",
+        "severity": "HIGH",
+        "mitre_id": "T1021",
+        "cvss_base": 8.0,
+        "description": "RDP port 3389 open from DMZ to PRIVATE",
+        "remediation": [
+            "Use a VPN or Bastion host for RDP access"
+        ],
+        "compliance": [
+            "NIST-AC-3"
+        ],
+        "check": "[u for u, v in G.edges if G.edges[u, v]['port'] == 3389 and G.nodes[u]['zone'] == 'DMZ' and G.nodes[v]['zone'] == 'PRIVATE']"
+    },
+    {
+        "rule_id": "ZT-009",
+        "name": "DB with no incoming auth",
+        "severity": "HIGH",
+        "mitre_id": "T1078",
+        "cvss_base": 7.5,
+        "description": "Database node has edges with no authentication required",
+        "remediation": [
+            "Enable auth on all ingress edges to database"
+        ],
+        "compliance": [
+            "NIST-IA-2"
+        ],
+        "check": "[n for n in G.nodes if G.nodes[n]['type'] == 'database' and any(not G.edges[s, n]['auth_required'] for s in G.predecessors(n))]"
+    },
+    {
+        "rule_id": "ZT-010",
+        "name": "Untrusted edge to PRIVATE",
+        "severity": "MEDIUM",
+        "mitre_id": "T1071",
+        "cvss_base": 5.5,
+        "description": "UNTRUSTED trust level edge into PRIVATE zone",
+        "remediation": [
+            "Increase trust level or add additional validation"
+        ],
+        "compliance": [
+            "NIST-AC-4"
+        ],
+        "check": "[u for u, v in G.edges if G.edges[u, v]['trust_level'] == 'UNTRUSTED' and G.nodes[v]['zone'] == 'PRIVATE']"
+    },
+    {
+        "rule_id": "ZT-011",
+        "name": "API without TLS",
+        "severity": "HIGH",
+        "mitre_id": "T1557",
+        "cvss_base": 7.0,
+        "description": "API node not using TLS encryption",
+        "remediation": [
+            "Implement TLS-1.2 or TLS-1.3 for API endpoints"
+        ],
+        "compliance": [
+            "NIST-SC-8"
+        ],
+        "check": "[n for n in G.nodes if G.nodes[n]['type'] == 'api' and G.nodes[n]['encryption_type'] not in ['TLS-1.3', 'RSA-2048', 'ECC']]"
+    },
+    {
+        "rule_id": "ZT-012",
+        "name": "Wildcard Resource IAM",
+        "severity": "HIGH",
+        "mitre_id": "T1098",
+        "cvss_base": 7.0,
+        "description": "IAM role uses wildcard '*' resource",
+        "remediation": [
+            "Scope IAM resources to specific ARNs"
+        ],
+        "compliance": [
+            "NIST-AC-6"
+        ],
+        "check": "[n for n in G.nodes if any(':*' in role for role in G.nodes[n].get('iam_roles', []))]"
+    },
+    {
+        "rule_id": "ZT-013",
+        "name": "Unencrypted Cache",
+        "severity": "HIGH",
+        "mitre_id": "T1530",
+        "cvss_base": 7.5,
+        "description": "Cache node with NONE encryption and HIGH sensitivity",
+        "remediation": [
+            "Enable encryption at rest for cache clusters"
+        ],
+        "compliance": [
+            "NIST-SC-28"
+        ],
+        "check": "[n for n in G.nodes if G.nodes[n]['type'] == 'cache' and G.nodes[n]['encryption_type'] == 'NONE' and G.nodes[n]['data_sensitivity'] == 'HIGH']"
+    },
+    {
+        "rule_id": "ZT-014",
+        "name": "MQ in PUBLIC zone",
+        "severity": "MEDIUM",
+        "mitre_id": "T1071",
+        "cvss_base": 5.0,
+        "description": "Message Queue accessible from PUBLIC zone",
+        "remediation": [
+            "Move Message Queue to RESTRICTED zone"
+        ],
+        "compliance": [
+            "NIST-AC-3"
+        ],
+        "check": "[n for n in G.nodes if G.nodes[n]['type'] == 'message_queue' and G.nodes[n]['zone'] == 'PUBLIC']"
+    },
+    {
+        "rule_id": "ZT-015",
+        "name": "LB in PRIVATE zone",
+        "severity": "LOW",
+        "mitre_id": "T1190",
+        "cvss_base": 3.0,
+        "description": "Load balancer placed in PRIVATE zone",
+        "remediation": [
+            "Relocate LB to DMZ or PUBLIC zone"
+        ],
+        "compliance": [
+            "NIST-AC-3"
+        ],
+        "check": "[n for n in G.nodes if G.nodes[n]['type'] == 'load_balancer' and G.nodes[n]['zone'] == 'PRIVATE']"
+    },
+    {
+        "rule_id": "ZT-016",
+        "name": "SSH exposed to PUBLIC",
+        "severity": "CRITICAL",
+        "mitre_id": "T1110",
+        "cvss_base": 9.5,
+        "description": "SSH port 22 open to PUBLIC zone",
+        "remediation": [
+            "Disable direct SSH from internet; use VPN"
+        ],
+        "compliance": [
+            "NIST-AC-17"
+        ],
+        "check": "[u for u, v in G.edges if G.edges[u, v]['port'] == 22 and G.nodes[u]['zone'] == 'PUBLIC']"
+    },
+    {
+        "rule_id": "ZT-017",
+        "name": "Long retention with weak encryption",
+        "severity": "HIGH",
+        "mitre_id": "T1530",
+        "cvss_base": 7.2,
+        "description": "Database with >5 years retention and RSA encryption",
+        "remediation": [
+            "Upgrade to Quantum-Resistant encryption (ML-KEM)"
+        ],
+        "compliance": [
+            "NIST-SC-28"
+        ],
+        "check": "[n for n in G.nodes if G.nodes[n]['type'] == 'database' and G.nodes[n]['retention_years'] > 5 and 'RSA' in G.nodes[n]['encryption_type']]"
+    },
+    {
+        "rule_id": "ZT-018",
+        "name": "DMZ server with no firewall",
+        "severity": "MEDIUM",
+        "mitre_id": "T1133",
+        "cvss_base": 5.0,
+        "description": "Server in DMZ has no incoming edge from a firewall",
+        "remediation": [
+            "Ensure all DMZ traffic passes through a firewall"
+        ],
+        "compliance": [
+            "NIST-SC-7"
+        ],
+        "check": "[n for n in G.nodes if G.nodes[n]['zone'] == 'DMZ' and G.nodes[n]['type'] == 'server' and not any(G.nodes[s]['type'] == 'firewall' for s in G.predecessors(n))]"
+    },
+    {
+        "rule_id": "ZT-019",
+        "name": "Unknown outbound HTTPS",
+        "severity": "MEDIUM",
+        "mitre_id": "T1071",
+        "cvss_base": 4.5,
+        "description": "Outbound HTTPS from PRIVATE zone to PUBLIC",
+        "remediation": [
+            "Restrict egress traffic to approved destinations"
+        ],
+        "compliance": [
+            "NIST-AC-4"
+        ],
+        "check": "[u for u, v in G.edges if G.edges[u, v]['protocol'] == 'HTTPS' and G.nodes[u]['zone'] == 'PRIVATE' and G.nodes[v]['zone'] == 'PUBLIC']"
+    },
+    {
+        "rule_id": "ZT-020",
+        "name": "Latest container tag",
+        "severity": "LOW",
+        "mitre_id": "T1195",
+        "cvss_base": 2.5,
+        "description": "Container image using ':latest' tag",
+        "remediation": [
+            "Use specific immutable image tags"
+        ],
+        "compliance": [
+            "NIST-SA-12",
+            "DPDP-S9"
+        ],
+        "check": "[n for n in G.nodes if G.nodes[n]['type'] == 'container' and G.nodes[n]['container_image'] and (':latest' in G.nodes[n]['container_image'] or ':' not in G.nodes[n]['container_image'])]"
+    }
+]

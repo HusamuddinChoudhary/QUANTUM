@@ -1,0 +1,104 @@
+{
+    "name": "Ministry of Defense - Digital Assets",
+    "graph": {
+        "nodes": [
+            {
+                "id": "waf-entry",
+                "label": "WAF Entry Point",
+                "type": "firewall",
+                "zone": "PUBLIC",
+                "cvss": 0
+            },
+            {
+                "id": "gov-portal",
+                "label": "Gov Service Portal",
+                "type": "webserver",
+                "zone": "DMZ",
+                "cvss": 5.4
+            },
+            {
+                "id": "api-gateway",
+                "label": "Internal API Gateway",
+                "type": "appserver",
+                "zone": "DMZ",
+                "cvss": 0
+            },
+            {
+                "id": "data-vault",
+                "label": "Classified Data Vault",
+                "type": "database",
+                "zone": "PRIVATE",
+                "cvss": 0
+            },
+            {
+                "id": "id-server",
+                "label": "Identity Provider",
+                "type": "appserver",
+                "zone": "PRIVATE",
+                "cvss": 2.5
+            }
+        ],
+        "edges": [
+            {
+                "source": "waf-entry",
+                "target": "gov-portal",
+                "riskLevel": "LOW"
+            },
+            {
+                "source": "gov-portal",
+                "target": "api-gateway",
+                "riskLevel": "MEDIUM"
+            },
+            {
+                "source": "api-gateway",
+                "target": "data-vault",
+                "riskLevel": "CRITICAL"
+            },
+            {
+                "source": "id-server",
+                "target": "api-gateway",
+                "riskLevel": "LOW"
+            }
+        ]
+    },
+    "violations": [
+        {
+            "rule_id": "AP-991",
+            "severity": "CRITICAL",
+            "mitre_id": "T1558",
+            "mitre_name": "Steal or Forge Kerberos Tickets",
+            "node_id": "api-gateway",
+            "engine": "Attack Path",
+            "remediation": "Lateral movement detected. Isolate API gateway and enforce hardware-backed MFA (YubiKey) for all session tokens."
+        },
+        {
+            "rule_id": "SC-102",
+            "severity": "HIGH",
+            "mitre_id": "T1474",
+            "mitre_name": "Supply Chain Compromise",
+            "node_id": "gov-portal",
+            "engine": "Supply Chain",
+            "remediation": "Vulnerable dependency 'jndi-lookup' found in logs. Rebuild image with approved hardened base and updated dependencies."
+        }
+    ],
+    "qvi_results": [
+        {
+            "node_id": "data-vault",
+            "algorithm": "AES-256-CBC",
+            "qvi_score": 95,
+            "recommendation": "Classified data at severe risk of future decryption. Deploy Dilithium signatures for data integrity.",
+            "priority": "CRITICAL"
+        }
+    ],
+    "scores": {
+        "zt_score": 75,
+        "qvi": 88,
+        "attack_path_score": 52,
+        "supply_chain_score": 68,
+        "compliance_score": 82
+    },
+    "metadata": {
+        "organization": "National Security Office",
+        "timestamp": "2024-03-10T00:30:00Z"
+    }
+}

@@ -14,74 +14,21 @@ router = APIRouter()
 SESSIONS_CACHE = {}
 DEMO_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "demo")
 
-# Mock user database for testing signup/login without full DB migration
-MOCK_USERS = {
-    "admin@bank.com": {
-        "id": "admin-id",
-        "email": "admin@bank.com",
-        "password_hash": get_password_hash("password"),
-        "role": "ADMIN",
-        "orgId": "bank-org-id",
-        "fullName": "Alex Chen"
-    }
-}
-
 # Auth Endpoints
 @router.post("/auth/login")
 async def login(data: dict = Body(...)):
+    # Mock auth logic for MVP
     email = data.get("email")
     password = data.get("password")
-    
-    user = MOCK_USERS.get(email)
-    
-    if user and verify_password(password, user["password_hash"]):
-        access = create_access_token({"sub": user["id"], "org_id": user["orgId"], "role": user["role"]})
-        refresh = create_refresh_token(user["id"])
-        # Don't send password hash to client
-        user_data = {k: v for k, v in user.items() if k != "password_hash"}
+    if email == "admin@bank.com" and password == "password":
+        access = create_access_token({"sub": "admin-id", "org_id": "bank-org-id", "role": "ADMIN"})
+        refresh = create_refresh_token("admin-id")
         return {
             "accessToken": access,
             "refreshToken": refresh,
-            "user": user_data
+            "user": {"id": "admin-id", "email": email, "role": "ADMIN", "orgId": "bank-org-id", "fullName": "Alex Chen"}
         }
-    
-    # Fallback to hardcoded demo (just in case)
-    if email == "demo@hospital.com" and password == "demo":
-         access = create_access_token({"sub": "demo-id", "org_id": "hosp-org-id", "role": "USER"})
-         refresh = create_refresh_token("demo-id")
-         return {
-             "accessToken": access,
-             "refreshToken": refresh,
-             "user": {"id": "demo-id", "email": email, "role": "USER", "orgId": "hosp-org-id", "fullName": "Demo User"}
-         }
-
     raise HTTPException(status_code=401, detail="Invalid credentials")
-
-@router.post("/auth/signup")
-async def signup(data: dict = Body(...)):
-    email = data.get("email")
-    password = data.get("password")
-    full_name = data.get("full_name", email.split("@")[0])
-    
-    if not email or not password:
-        raise HTTPException(status_code=400, detail="Email and password are required")
-        
-    if email in MOCK_USERS:
-        raise HTTPException(status_code=400, detail="Email already registered")
-        
-    user_id = str(uuid.uuid4())
-    org_id = str(uuid.uuid4())
-    
-    MOCK_USERS[email] = {
-        "id": user_id,
-        "email": email,
-        "password_hash": get_password_hash(password),
-        "role": "USER",
-        "orgId": org_id,
-        "fullName": full_name
-    }
-    
-    return {"message": "User created successfully", "userId": user_id}
 
 @router.post("/auth/refresh")
 async def refresh(data: dict = Body(...)):

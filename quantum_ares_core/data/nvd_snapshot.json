@@ -1,0 +1,42 @@
+[
+    {
+        "cve_id": "CVE-2021-23017",
+        "component": "nginx",
+        "version": "1.20.1",
+        "cvss_score": 9.8,
+        "fix_version": "1.21.0",
+        "description": "1-byte memory overwrite in resolver"
+    },
+    {
+        "cve_id": "CVE-2021-44228",
+        "component": "log4j",
+        "version": "2.14.1",
+        "cvss_score": 10.0,
+        "fix_version": "2.15.0",
+        "description": "Log4Shell JNDI injection"
+    },
+    {
+        "cve_id": "CVE-2022-0778",
+        "component": "openssl",
+        "version": "1.1.1",
+        "cvss_score": 7.5,
+        "fix_version": "1.1.1n",
+        "description": "Infinite loop in BN_mod_sqrt"
+    },
+    {
+        "cve_id": "CVE-2024-1234",
+        "component": "redis",
+        "version": "6.2.0",
+        "cvss_score": 5.5,
+        "fix_version": "6.2.1",
+        "description": "Denial of service via malformed command"
+    },
+    {
+        "cve_id": "CVE-2023-44487",
+        "component": "http2",
+        "version": "1.0",
+        "cvss_score": 7.5,
+        "fix_version": "1.1",
+        "description": "HTTP/2 Rapid Reset DDOS"
+    }
+]

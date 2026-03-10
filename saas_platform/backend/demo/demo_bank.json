@@ -1,0 +1,123 @@
+{
+    "name": "Global Bank Infrastructure",
+    "graph": {
+        "nodes": [
+            {
+                "id": "fw-ext",
+                "label": "External Firewall",
+                "type": "firewall",
+                "zone": "PUBLIC",
+                "cvss": 0
+            },
+            {
+                "id": "lb-web",
+                "label": "Web Load Balancer",
+                "type": "webserver",
+                "zone": "DMZ",
+                "cvss": 2.1
+            },
+            {
+                "id": "web-main",
+                "label": "Online Banking Portal",
+                "type": "webserver",
+                "zone": "DMZ",
+                "cvss": 4.5
+            },
+            {
+                "id": "app-core",
+                "label": "Core Banking App",
+                "type": "appserver",
+                "zone": "PRIVATE",
+                "cvss": 0
+            },
+            {
+                "id": "db-prod",
+                "label": "High-Value Transaction DB",
+                "type": "database",
+                "zone": "PRIVATE",
+                "cvss": 0
+            },
+            {
+                "id": "cache-redis",
+                "label": "Session Cache",
+                "type": "appserver",
+                "zone": "PRIVATE",
+                "cvss": 8.1
+            }
+        ],
+        "edges": [
+            {
+                "source": "fw-ext",
+                "target": "lb-web",
+                "riskLevel": "LOW"
+            },
+            {
+                "source": "lb-web",
+                "target": "web-main",
+                "riskLevel": "LOW"
+            },
+            {
+                "source": "web-main",
+                "target": "app-core",
+                "riskLevel": "MEDIUM"
+            },
+            {
+                "source": "app-core",
+                "target": "db-prod",
+                "riskLevel": "LOW"
+            },
+            {
+                "source": "app-core",
+                "target": "cache-redis",
+                "riskLevel": "HIGH"
+            }
+        ]
+    },
+    "violations": [
+        {
+            "rule_id": "ZT-001",
+            "severity": "MEDIUM",
+            "mitre_id": "T1071",
+            "mitre_name": "Standard Application Layer Protocol",
+            "node_id": "web-main",
+            "engine": "Zero-Trust",
+            "remediation": "Enforce mTLS for all web-to-app communications. Rotate API keys."
+        },
+        {
+            "rule_id": "Q-082",
+            "severity": "CRITICAL",
+            "mitre_id": "T1557",
+            "mitre_name": "Man-in-the-Middle",
+            "node_id": "db-prod",
+            "engine": "Quantum Risk",
+            "remediation": "Migrate TLS 1.2 RSA keys to CRYSTALS-Kyber (PQC) to prevent HNDL decryption."
+        }
+    ],
+    "qvi_results": [
+        {
+            "node_id": "db-prod",
+            "algorithm": "RSA-4096",
+            "qvi_score": 88,
+            "recommendation": "High risk of harvest-now-decrypt-later. Immediate PQC migration required.",
+            "priority": "CRITICAL"
+        },
+        {
+            "node_id": "app-core",
+            "algorithm": "ECDSA-P256",
+            "qvi_score": 42,
+            "recommendation": "Shor's algorithm threat. Plan migration for 2026.",
+            "priority": "MEDIUM"
+        }
+    ],
+    "scores": {
+        "zt_score": 82,
+        "qvi": 92,
+        "attack_path_score": 85,
+        "supply_chain_score": 78,
+        "compliance_score": 90
+    },
+    "metadata": {
+        "organization": "Quantum Financial Services",
+        "timestamp": "2024-03-10T00:30:00Z"
+    }
+}

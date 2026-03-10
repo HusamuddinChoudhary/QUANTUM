@@ -1,0 +1,104 @@
+{
+    "name": "St. Jude Medical Center",
+    "graph": {
+        "nodes": [
+            {
+                "id": "pacs-router",
+                "label": "PACS Imaging Gateway",
+                "type": "webserver",
+                "zone": "PUBLIC",
+                "cvss": 7.5
+            },
+            {
+                "id": "ehr-primary",
+                "label": "EHR Database",
+                "type": "database",
+                "zone": "PRIVATE",
+                "cvss": 0
+            },
+            {
+                "id": "med-device-1",
+                "label": "MRI Scanner Node",
+                "type": "appserver",
+                "zone": "PRIVATE",
+                "cvss": 9.8
+            },
+            {
+                "id": "nurse-station",
+                "label": "Nursing Terminal",
+                "type": "webserver",
+                "zone": "DMZ",
+                "cvss": 4.2
+            },
+            {
+                "id": "billing-api",
+                "label": "Medical Billing API",
+                "type": "appserver",
+                "zone": "DMZ",
+                "cvss": 6.8
+            }
+        ],
+        "edges": [
+            {
+                "source": "pacs-router",
+                "target": "ehr-primary",
+                "riskLevel": "CRITICAL"
+            },
+            {
+                "source": "nurse-station",
+                "target": "ehr-primary",
+                "riskLevel": "LOW"
+            },
+            {
+                "source": "ehr-primary",
+                "target": "med-device-1",
+                "riskLevel": "MEDIUM"
+            },
+            {
+                "source": "billing-api",
+                "target": "ehr-primary",
+                "riskLevel": "HIGH"
+            }
+        ]
+    },
+    "violations": [
+        {
+            "rule_id": "CVE-2024-9988",
+            "severity": "CRITICAL",
+            "mitre_id": "T1190",
+            "mitre_name": "Exploit Public-Facing Application",
+            "node_id": "pacs-router",
+            "engine": "Attack Path",
+            "remediation": "Update hospital gateway firmware immediately. Apply network segmentation to isolate imaging traffic."
+        },
+        {
+            "rule_id": "LEG-022",
+            "severity": "HIGH",
+            "mitre_id": "T1210",
+            "mitre_name": "Exploitation of Remote Services",
+            "node_id": "med-device-1",
+            "engine": "Compliance",
+            "remediation": "Legacy Win7 embedded system detected. Move behind a zero-trust proxy with strict application-layer inspection."
+        }
+    ],
+    "qvi_results": [
+        {
+            "node_id": "ehr-primary",
+            "algorithm": "AES-128",
+            "qvi_score": 65,
+            "recommendation": "Upgrade to AES-256 and implement PQC key exchange for medical records.",
+            "priority": "HIGH"
+        }
+    ],
+    "scores": {
+        "zt_score": 58,
+        "qvi": 72,
+        "attack_path_score": 45,
+        "supply_chain_score": 62,
+        "compliance_score": 55
+    },
+    "metadata": {
+        "organization": "Healthcare Trust Group",
+        "timestamp": "2024-03-10T00:30:00Z"
+    }
+}
