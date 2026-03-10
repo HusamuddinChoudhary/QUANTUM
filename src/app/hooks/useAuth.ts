@@ -38,7 +38,7 @@ export const useAuth = () => {
 
   const signup = async (email: string, password: string, fullName: string) => {
     try {
-      const res = await api.post('/auth/signup', { email, password, full_name: fullName });
+      const res = await api.post('/auth/signup', { email, password, name: fullName });
       if (res.status === 200 || res.status === 201) {
         return login(email, password);
       }

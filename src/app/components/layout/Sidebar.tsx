@@ -25,7 +25,8 @@ export function Sidebar() {
 
 
   const handleLogout = () => { logout(); navigate('/login', { replace: true }); };
-  const initials = user?.name?.split(' ').map((n: string) => n[0]).join('') ?? 'AC';
+  const displayName = user?.fullName ?? user?.name ?? user?.email ?? 'User';
+  const initials = displayName.split(' ').map((n: string) => n[0]).toUpperCase().join('').slice(0, 2);
 
   return (
     <aside style={{
@@ -133,7 +134,7 @@ export function Sidebar() {
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ color: C.navy, fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {user?.name ?? 'Danish Khan'}
+              {displayName}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
               <span style={{ background: 'var(--c-accent-light)', color: 'var(--c-accent)', fontSize: 10, padding: '1px 6px', borderRadius: 8, fontWeight: 700 }}>
