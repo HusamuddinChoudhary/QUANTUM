@@ -1,5 +1,4 @@
 services:
-
   # -------------------------
   # BACKEND: FastAPI
   # -------------------------
@@ -15,11 +14,10 @@ services:
       - key: PYTHON_VERSION
         value: 3.11
 
-
   # -------------------------
   # FRONTEND: React (Vite)
   # -------------------------
-  - type: static
+  - type: static_site
     name: quantum-ares-frontend
     region: ohio
     plan: free
