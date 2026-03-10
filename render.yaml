@@ -16,13 +16,12 @@ services:
   # -------------------------
   # FRONTEND: React (Vite)
   # -------------------------
-  - type: web
+  - type: static
     name: quantum-ares-frontend
-    runtime: node
     region: ohio
     plan: free
     buildCommand: npm install && npm run build
-    startCommand: npx serve -s dist
+    staticPublishPath: ./dist
     envVars:
       - key: VITE_API_URL
         fromService:
