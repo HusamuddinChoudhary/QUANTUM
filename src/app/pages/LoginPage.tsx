@@ -45,7 +45,7 @@ export function LoginPage() {
     try {
       let success = false;
       if (isSignUp) {
-        success = await signup(name, email, password);
+        success = await signup(email, password, name);
         if (!success) setError('Could not create account. Email might already be registered.');
       } else {
         success = await login(email, password);
